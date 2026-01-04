@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Perfil do Inquilino</title>
+    <style>
+        body { background-color: #f9f9f9; color: #212529; font-family: 'Montserrat', sans-serif; margin: 0; }
+        
+        .header { background-color: #118435; color: #fff; padding: 1rem 2rem; display: flex; align-items: center; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .btn-voltar { color: white; text-decoration: none; font-weight: 600; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 6px; transition: 0.2s; }
+        .btn-voltar:hover { background: rgba(255,255,255,0.4); }
+        h1 { margin: 0; font-size: 1.5rem; }
+
+        .main-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        
+        .profile-card {
+            background: white; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center; padding-bottom: 30px;
+        }
+        
+        .cover-photo { height: 150px; background: linear-gradient(135deg, #118435, #0e6b2b); }
+        
+        .profile-pic {
+            width: 150px; height: 150px; border-radius: 50%; 
+            border: 5px solid white; object-fit: cover;
+            margin-top: -75px; background: white;
+        }
+        
+        .profile-name { font-size: 1.8rem; font-weight: 700; margin: 15px 0 5px 0; color: #333; }
+        .profile-desc { color: #666; font-style: italic; margin-bottom: 20px; }
+
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+            padding: 0 40px; text-align: left; margin-top: 30px;
+        }
+        
+        .info-item { background: #f8f9fa; padding: 15px; border-radius: 8px; }
+        .label { font-size: 0.8rem; text-transform: uppercase; color: #888; letter-spacing: 1px; font-weight: 600; display: block; margin-bottom: 5px; }
+        .value { font-size: 1.1rem; font-weight: 500; color: #333; }
+
+        .moradia-badge {
+            display: inline-block; background: #e8f5e9; color: #118435; 
+            padding: 8px 16px; border-radius: 20px; font-weight: 600; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="/" class="btn-voltar">← Voltar</a>
+        <h1>Perfil do Inquilino</h1>
+    </div>
+
+    <div class="main-container">
+        <div class="profile-card">
+            <div class="cover-photo"></div>
+            <img src="{{ inquilino.foto }}" class="profile-pic">
+            
+            <div class="profile-name">{{ inquilino.nome }}</div>
+            <div class="profile-desc">{{ inquilino.descricao }}</div>
+
+            {% if inquilino.morando_em %}
+                <div class="moradia-badge">🏠 Morando em: {{ inquilino.morando_em }}</div>
+            {% else %}
+                <div class="moradia-badge" style="background: #eee; color: #666;">Sem contrato ativo</div>
+            {% endif %}
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">CPF</span>
+                    <span class="value">{{ inquilino.cpf }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Data de Nascimento</span>
+                    <span class="value">{{ inquilino.data_nascimento }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Telefone</span>
+                    <span class="value">{{ inquilino.telefone }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">ID Sistema</span>
+                    <span class="value">#{{ inquilino.id }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

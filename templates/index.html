@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+        <style>
+            body { background-color: #f9f9f9; color: #212529; font-family: 'Montserrat', sans-serif; margin: 0; }
+            
+            /* HEADER E MENU */
+            .header { background-color: #118435; color: #fff; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; }
+            h1 { font-size: 1.8rem; font-weight: 600; margin: 0; }
+            .btn-menu { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; transition: 0.2s; }
+            .btn-menu:hover { transform: scale(1.1); }
+
+            /* SIDEBAR */
+            .sidebar { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: #ffffff; overflow-x: hidden; transition: 0.4s; box-shadow: -5px 0 15px rgba(0,0,0,0.1); padding-top: 60px; }
+            .sidebar-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; background: #118435; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+            .btn-close { font-size: 2rem; background: none; border: none; color: white; cursor: pointer; }
+            
+            /* LISTA DE CLIENTES */
+            .client-list { padding: 10px; }
+            .client-item { 
+                display: flex; align-items: center; padding: 12px; 
+                border-bottom: 1px solid #eee; text-decoration: none; 
+                color: inherit; transition: 0.2s; border-radius: 8px; 
+            }
+            .client-item:hover { background-color: #f0fdf4; transform: translateX(-5px); }
+            .client-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid #118435; }
+            .client-info div { font-weight: 600; font-size: 0.95rem; color: #333; }
+
+            /* BOTÕES SUPERIORES */
+            .acoes-container { max-width: 1400px; margin: 30px auto 0 auto; padding: 0 30px; display: flex; gap: 15px; flex-wrap: wrap; }
+            .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; text-decoration: none; border: 2px solid transparent; font-size: 0.95rem; }
+            .btn-imovel { background-color: #118435; color: white; border-color: #118435; }
+            .btn-imovel:hover { background-color: #0e6b2b; transform: translateY(-2px); }
+            .btn-inquilino { background-color: white; color: #118435; border-color: #118435; }
+            .btn-inquilino:hover { background-color: #e8f5e9; transform: translateY(-2px); }
+            .btn-contrato { background-color: #0056b3; color: white; border-color: #0056b3; }
+            .btn-contrato:hover { background-color: #004494; transform: translateY(-2px); }
+            
+            /* GRID DE CARTÕES */
+            .container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; padding: 30px; max-width: 1400px; margin: 0 auto; }
+            .caixa { position: relative; height: 350px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: flex; justify-content: flex-end; align-items: flex-end; padding: 25px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; overflow: hidden; }
+            .caixa:hover { transform: translateY(-7px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); }
+            .usuario-info { position: absolute; top: 25px; left: 25px; display: flex; align-items: center; }
+            .usuario-foto { width: 50px; height: 50px; border-radius: 50%; background-color: #e0e0e0; margin-right: 12px; border: 3px solid #fff; object-fit: cover; }
+            .usuario-nome { font-weight: 600; color: #333; }
+            a { text-decoration: none; display: block; color: inherit; }
+
+            /* TEXTO HOVER */
+            .caixa-texto-inferior { opacity: 0; transform: translateY(10px); transition: all 0.3s ease-in-out; font-weight: 600; font-size: 1.1rem; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); color: white; }
+            .caixa:hover .caixa-texto-inferior { opacity: 1; transform: translateY(0); }
+
+            /* MODAIS */
+            .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+            .modal-content { background-color: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); animation: modalFadeIn 0.3s ease-out; max-height: 90vh; overflow-y: auto; }
+            @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+            .modal-header h2 { margin-top: 0; color: #118435; }
+            .btn-close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #666; }
+            .btn-close-modal:hover { color: #000; }
+            .form-group { margin-bottom: 15px; }
+            .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+            .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
+            .form-group input[type="file"] { background-color: #fff; padding: 8px; }
+            .btn-submit-form { width: 100%; background-color: #118435; color: white; padding: 12px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; }
+            .btn-submit-form:hover { background-color: #0e6b2b; }
+        </style>
+        <title>GERIMOVEL</title>
+    </head>
+    <body>
+        
+        <div class="header">
+            <h1>GERIMOVEL 🏠</h1>
+            <button class="btn-menu" onclick="abrirMenu()">☰ Clientes</button>
+        </div>
+
+        <div id="mySidebar" class="sidebar">
+            <div class="sidebar-header">
+                <span>Todos os Inquilinos</span>
+                <button class="btn-close" onclick="fecharMenu()">&times;</button>
+            </div>
+            <div class="client-list">
+                {% for inq in lista_inquilinos %}
+                <a href="/inquilino/{{ inq.id }}" class="client-item">
+                    <img src="{{ inq.foto }}" class="client-avatar">
+                    <div class="client-info">
+                        <div>{{ inq.nome }}</div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="acoes-container">
+            <button onclick="abrirModal()" class="btn btn-imovel">🏠 Adicionar Imóvel</button>
+            <button onclick="abrirModalInquilino()" class="btn btn-inquilino">👤 Adicionar Inquilino</button>
+            <button onclick="abrirModalContrato()" class="btn btn-contrato">📄 Adicionar Contrato</button>
+        </div>
+        
+        <div class="container">
+            {% for item in itens %}
+            <a href="/detalhes/{{ item.imovel_id }}">
+                <div class="caixa" style="background-image: url('{{ item.foto_imovel }}'); background-size: cover; background-position: center;">
+                    <div class="usuario-info">
+                        {% if item.nome_inquilino %}
+                            <img src="{{ item.foto_inquilino }}" class="usuario-foto">
+                            <div style="display: flex; flex-direction: column;">
+                                <span class="usuario-nome" style="background: rgba(255,255,255,0.9); padding: 2px 8px; border-radius: 4px; font-size: 0.9rem;">{{ item.nome_inquilino }}</span>
+                                <span style="font-size: 0.8rem; color: white; text-shadow: 1px 1px 2px black; margin-top: 2px;">em {{ item.nome_imovel }}</span>
+                            </div>
+                        {% else %}
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #28a745; display: flex; align-items: center; justify-content: center; margin-right: 10px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+                                    <span style="color: white; font-weight: bold; font-size: 1.2rem;">✓</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span class="usuario-nome" style="background: #28a745; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.9rem;">Disponível</span>
+                                    <span style="font-size: 0.8rem; color: white; text-shadow: 1px 1px 2px black; margin-top: 2px;">{{ item.nome_imovel }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if item.nome_inquilino %}
+                        <span class="caixa-texto-inferior">Ver Contrato</span>
+                    {% else %}
+                        <span class="caixa-texto-inferior" style="color: #4cd137;">Alugar Agora</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div> 
+
+        <div id="modalImovel" class="modal-overlay" onclick="fecharModalFora(event)">
+            <div class="modal-content">
+                <button class="btn-close-modal" onclick="fecharModal()">&times;</button>
+                <div class="modal-header"><h2>Novo Imóvel</h2></div>
+                <form method="post" action="/" enctype="multipart/form-data">
+                    <div class="form-group"><label for="nome_imovel">Nome do Imóvel</label><input type="text" id="nome_imovel" name="nome_imovel" placeholder="Ex: Casa no Centro" required></div>
+                    <div class="form-group"><label for="endereco">Endereço</label><input type="text" id="endereco" name="endereco" placeholder="Rua, Número, Bairro" required></div>
+                    <div class="form-group"><label for="cep">CEP</label><input type="number" id="cep" name="cep" placeholder="00000000" required></div>
+                    <div class="form-group"><label for="foto_imovel">Foto do Imóvel</label><input type="file" id="foto_imovel" name="foto_imovel" accept="image/*"></div>
+                    <button type="submit" class="btn-submit-form" name="acao" value="CadastrarImovel">Cadastrar Imóvel</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="modalInquilino" class="modal-overlay" onclick="fecharModalFora(event)">
+            <div class="modal-content">
+                <button class="btn-close-modal" onclick="fecharModalInquilino()">&times;</button>
+                <div class="modal-header"><h2>Novo Inquilino</h2></div>
+                <form method="post" action="/" enctype="multipart/form-data">
+                    <div class="form-group"><label for="nome_inquilino">Nome do Inquilino</label><input type="text" id="nome_inquilino" name="nome_inquilino" placeholder="Ex: João Silva" required></div>
+                    <div class="form-group"><label for="cpf">CPF</label><input type="number" id="cpf" name="cpf" placeholder="00000000000" required></div>
+                    <div class="form-group"><label for="descrição_inquilino">Descrição</label><input type="text" id="descrição_inquilino" name="descricao" placeholder="Ex: Estudante de engenharia"></div>
+                    <div class="form-group"><label for="data_nascimento">Data de Nascimento</label><input type="date" id="data_nascimento" name="data_nascimento" required></div>
+                    <div class="form-group"><label for="telefone">Telefone</label><input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000"></div>
+                    <div class="form-group"><label for="foto_inquilino">Foto do Inquilino</label><input type="file" id="foto_inquilino" name="foto_inquilino" accept="image/*"></div>
+                    <button type="submit" class="btn-submit-form" name="acao" value="CadastrarInquilino">Cadastrar Inquilino</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="modalContrato" class="modal-overlay" onclick="fecharModalFora(event)">
+            <div class="modal-content">
+                <button class="btn-close-modal" onclick="fecharModalContrato()">&times;</button>
+                <div class="modal-header"><h2 style="color: #0056b3;">Novo Contrato</h2></div>
+                <form method="post" action="/">
+                    <div class="form-group">
+                        <label for="imovel_contrato">Selecione o Imovel</label>
+                        <input list="listaImovel" name="imovel_contrato" placeholder="Digite para buscar..." required>
+                        <datalist id="listaImovel">{% for imovel in lista_imoveis %}<option value="{{ imovel.id }}">{{ imovel.nome }}</option>{% endfor %}</datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="inquilino_contrato">Selecione o Inquilino</label>
+                        <input list="listaInquilino" name="inquilino_contrato" placeholder="Digite para buscar..." required>
+                        <datalist id="listaInquilino">{% for inquilino in lista_inquilinos %}<option value="{{ inquilino.id }}">{{ inquilino.nome }}</option>{% endfor %}</datalist>
+                    </div>
+                    <div class="form-group"><label for="inicio_contrato">Data de Início</label><input type="date" id="inicio_contrato" name="data_inicio" required></div>
+                    <div class="form-group"><label for="fim_contrato">Data de Fim</label><input type="date" id="fim_contrato" name="data_fim" required></div>
+                    <div class="form-group"><label for="valor_contrato">Valor do Aluguel (R$)</label><input type="number" id="valor_contrato" name="valor_contrato" placeholder="0,00" required></div>
+                    <div class="form-group"><label for="dia_pagamento">Dia de Pagamento</label><input type="number" id="dia_pagamento" name="dia_pagamento" min="1" max="31" placeholder="Informe o dia (ex: 5)" required></div>
+                    <button type="submit" class="btn-submit-form" style="background-color: #0056b3;" name="acao" value="CadastrarContrato">Cadastrar Contrato</button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            function abrirMenu() { document.getElementById("mySidebar").style.width = "300px"; }
+            function fecharMenu() { document.getElementById("mySidebar").style.width = "0"; }
+            function abrirModal() { document.getElementById('modalImovel').style.display = 'flex'; }
+            function abrirModalInquilino() { document.getElementById('modalInquilino').style.display = 'flex'; }
+            function abrirModalContrato() { document.getElementById('modalContrato').style.display = 'flex'; }
+            function fecharModal() { document.getElementById('modalImovel').style.display = 'none'; }
+            function fecharModalInquilino() { document.getElementById('modalInquilino').style.display = 'none'; }
+            function fecharModalContrato() { document.getElementById('modalContrato').style.display = 'none'; }
+            function fecharModalFora(event) {
+                if (event.target.id === 'modalImovel') fecharModal();
+                if (event.target.id === 'modalInquilino') fecharModalInquilino();
+                if (event.target.id === 'modalContrato') fecharModalContrato();
+            }
+        </script>
+    </body>
+</html>
